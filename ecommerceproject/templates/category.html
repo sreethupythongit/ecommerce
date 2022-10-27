@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block metadescription %}
+{% if category %}
+{{ category.description|truncatewords:155 }}
+{% else %}
+Welcome to ABC store where you can buy differerent items
+{% endif %}
+{% endblock %}
+{% block title%}
+{% if category%}
+{{ category.name }}-ABC store
+{% else %}
+see our new collections-ABC store
+{% endif %}
+{% endblock%}
+{% block content %}
+{% if category %}
+<div class="container">
+    <div class="my_row_class">
+        <div class="mx_auto">
+            <p><a href="{% url 'shop:allProdCat' %}">Our Product Collections</a></p>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="container mx_auto">
+    {% if category %}
+    <img class="my_image" src="{% if category.image %}{{ category.image.url }}{% else %}#{% endif %}" alt="{{ category.name }}">
+</div><br>
+<div>
+    <h1 class="text-center my_title">{{ category.name }}</h1>
+    <p class="text-justify mx_auto">{{ category.description }}</p>
+</div>
+{% else %}
+<div>
+    <img class="my_image my_image_padding" src="{% static 'img/banner.png' %}" alt="our products">
+</div><br>
+<div>
+    <h1 class="text-center my_title">Our product Collections</h1>
+    <p class="text-justify mx_auto">Lorem Ipsum is probably the most popular dummy text generator out there. When
+        analyzing a
+        website template
+        or theme, you probably saw the Latin filler text that gave structure to the page. This was almost certainly
+        generated with Lorem Ipsum or a similar tool</p>
+</div>
+{% endif %}
+<div class="container">
+    <div class="row mx_auto">
+        {% for product in products.object_list %}
+        <div class="my_bottom_margin col-9 col-sm-12 col-md-4 col-lg-4">
+            <div class="card text-center" style="width: 18rem;">
+                <a href="{{ product.get_url }}"><img class="card-img-top my_image"
+                                                     src="{% if product.image %}{{ product.image.url }}{% else %}#{% endif %}"
+                                                     alt="{{ product.name }}"></a>
+                <div class="card-body">
+                    <h4>{{ product.name }}</h4>
+                    <p>{{ product.price }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        <div class="mx_auto col-md-12">
+            {% if products.paginator.num_pages > 1 %}
+            <hr>
+            <div class="text-center">
+                {% for pg in products.paginator.page_range %}
+                <a href="?page={{ pg }}" class="btn btn-light btn-sm {% if products.number == pg %} active {% endif %}">{{ pg }}</a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+        <br>
+    </div>
+</div>
+{% endblock %}
